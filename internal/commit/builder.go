@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/josephnaberhaus/gauthordle/internal/config"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -39,6 +40,18 @@ func WithConfig(cfg config.Config) FilterOption {
 			}
 		}
 
+		filter.teams = make(map[string]map[string]struct{}, len(cfg.Teams))
+		for name, team := range cfg.Teams {
+			for _, email := range team {
+				if _, ok := filter.teams[name]; !ok {
+					filter.teams[name] = map[string]struct{}{}
+				}
+
+				email = strings.ToLower(email)
+				filter.teams[name][email] = struct{}{}
+			}
+		}
+
 		return nil
 	}
 }
@@ -54,6 +67,14 @@ func WithStartTime(startTime time.Time) FilterOption {
 func WithEndTime(endTime time.Time) FilterOption {
 	return func(filter *Filter) error {
 		filter.endTime = endTime
+
+		return nil
+	}
+}
+
+func WithTeam(team string) FilterOption {
+	return func(filter *Filter) error {
+		filter.team = team
 
 		return nil
 	}

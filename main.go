@@ -21,6 +21,7 @@ var (
 	dumpCommits = flag.String("debugDumpCommits", "", "File to dump JSON containing all commits considered when generating the game.")
 	help        = flag.Bool("help", false, "Print the help message.")
 	random      = flag.Bool("random", false, "If true, play a random game instead of the daily game.")
+	team        = flag.String("team", "", "Team to build the game for. This must mach a team defined in your config.")
 )
 
 func main() {
@@ -48,11 +49,21 @@ func main() {
 	cfg, err := config.Load()
 	exitIfError(err)
 
-	filter, err := commit.BuildFilter(
+	// Get the commits for this game.
+	filterOptions := []commit.FilterOption{
 		commit.WithConfig(cfg),
 		commit.WithStartTime(startTime),
 		commit.WithEndTime(endTime),
-	)
+	}
+	if *team != "" {
+		if _, ok := cfg.Teams[*team]; !ok {
+			exit(fmt.Errorf("team %q doesn't exist in your config file", *team))
+		}
+
+		filterOptions = append(filterOptions, commit.WithTeam(*team))
+	}
+
+	filter, err := commit.BuildFilter(filterOptions...)
 	exitIfError(err)
 	commits, err := filter.GetCommits()
 	exitIfError(err)
@@ -65,6 +76,7 @@ func main() {
 		exitIfError(err)
 	}
 
+	// Build and run the game.
 	gameOptions := []game.Option{
 		game.WithCommits(commits),
 	}
@@ -94,6 +106,6 @@ func exitIfError(err error) {
 }
 
 func exit(err error) {
-	output.FprintColor(os.Stderr, fmt.Sprintf("ERROR: %s", err.Error()), output.Red)
+	output.FprintColor(os.Stderr, fmt.Sprintf("ERROR: %s\n", err.Error()), output.Red)
 	os.Exit(1)
 }

@@ -7,6 +7,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Team is a list of e-mails for every member of the team.
+type Team []string
+
 type AuthorFilter struct {
 	// ExcludeName is a regular expression dictating which author names should be excluded.
 	ExcludeName string `yaml:"exclude_name"`
@@ -16,7 +19,8 @@ type AuthorFilter struct {
 }
 
 type Config struct {
-	AuthorFilters []AuthorFilter `yaml:"author_filters"`
+	AuthorFilters []AuthorFilter  `yaml:"author_filters"`
+	Teams         map[string]Team `yaml:"teams"`
 }
 
 func Load() (Config, error) {

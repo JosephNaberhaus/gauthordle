@@ -10,10 +10,18 @@ import (
 )
 
 type Filter struct {
+	// startTime specifies the oldest commit to return.
+	// endTime specifies the earliest commit to return.
 	startTime, endTime time.Time
-
-	nameFilters  []*regexp.Regexp
+	// nameFilters specifies what author names should be excluded.
+	nameFilters []*regexp.Regexp
+	// emailFilters specifies what author emails should be excluded.
 	emailFilters []*regexp.Regexp
+	// team specifies what team to return commits for.
+	// If this doesn't match an element of teams than all commits will be returned.
+	team string
+	// teams is a map from team name to a set of e-mails for the members of the team.
+	teams map[string]map[string]struct{}
 }
 
 func (f *Filter) GetCommits() ([]git.Commit, error) {
@@ -31,7 +39,8 @@ func (f *Filter) GetCommits() ([]git.Commit, error) {
 
 	type filterFunc func([]git.Commit) []git.Commit
 	filters := []filterFunc{
-		f.filterForConfig,
+		f.filterExclusions,
+		f.filterByTeam,
 		f.filterOutBots,
 		f.filterCommitSubjects,
 		f.consolidateAuthorDetails,
@@ -64,9 +73,8 @@ func (f *Filter) filterOutBots(commits []git.Commit) []git.Commit {
 	return result
 }
 
-// filterForConfig filters out commits according to the user's config as defined in the config
-// package.
-func (f *Filter) filterForConfig(commits []git.Commit) []git.Commit {
+// filterExclusions filters out excluded names and e-mails.
+func (f *Filter) filterExclusions(commits []git.Commit) []git.Commit {
 	shouldDelete := func(commit git.Commit) bool {
 		for _, f := range f.nameFilters {
 			if f.MatchString(commit.AuthorName) {
@@ -83,6 +91,23 @@ func (f *Filter) filterForConfig(commits []git.Commit) []git.Commit {
 
 	commits = slices.Clone(commits)
 	return slices.DeleteFunc(commits, shouldDelete)
+}
+
+func (f *Filter) filterByTeam(commits []git.Commit) []git.Commit {
+	team, ok := f.teams[f.team]
+	if !ok {
+		// If not valid team is specified then just use all commits.
+		return commits
+	}
+
+	var result []git.Commit
+	for _, commit := range commits {
+		if _, ok := team[strings.ToLower(commit.AuthorEmail)]; ok {
+			result = append(result, commit)
+		}
+	}
+
+	return result
 }
 
 // filterCommitSubjects ensures that we only use interesting commit subjects

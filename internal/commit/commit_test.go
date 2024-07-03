@@ -37,7 +37,7 @@ func TestFilter_Filter_FilterOutBots(t *testing.T) {
 	assert.Equal(t, expected, filter.filterOutBots(input))
 }
 
-func TestFilter_Filter_FiltersForConfig(t *testing.T) {
+func TestFilter_Filter_FiltersExclusions(t *testing.T) {
 	input := []git.Commit{
 		{
 			AuthorName:  "Person 1",
@@ -119,7 +119,72 @@ func TestFilter_Filter_FiltersForConfig(t *testing.T) {
 			filter, err := BuildFilter(WithConfig(tc.cfg))
 			require.NoError(t, err)
 
-			assert.Equal(t, tc.exp, filter.filterForConfig(input))
+			assert.Equal(t, tc.exp, filter.filterExclusions(input))
+		})
+	}
+}
+
+func TestFilter_Filter_FilterTeam(t *testing.T) {
+	input := []git.Commit{
+		{
+			AuthorName:  "Person 1",
+			AuthorEmail: "abc@abc.com",
+		},
+		{
+			AuthorName:  "Person 2",
+			AuthorEmail: "def@def.com",
+		},
+		{
+			AuthorName:  "Person 3",
+			AuthorEmail: "ghi@ghi.com",
+		},
+	}
+
+	testCases := []struct {
+		name     string
+		cfg      config.Config
+		team     string
+		expected []git.Commit
+	}{
+		{
+			name:     "invalid team",
+			team:     "",
+			expected: input,
+		},
+		{
+			name: "unused team",
+			cfg: config.Config{
+				Teams: map[string]config.Team{
+					"rocket": {
+						"abc@abc.com",
+					},
+				},
+			},
+			expected: input,
+		},
+		{
+			name: "valid team",
+			cfg: config.Config{
+				Teams: map[string]config.Team{
+					"rocket": {
+						"abc@abc.com",
+					},
+				},
+			},
+			team:     "rocket",
+			expected: input[:1],
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			filter, err := BuildFilter(
+				WithConfig(testCase.cfg),
+				WithTeam(testCase.team),
+			)
+			require.NoError(t, err)
+
+			assert.Equal(t, testCase.expected, filter.filterByTeam(input))
 		})
 	}
 }
