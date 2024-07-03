@@ -21,15 +21,15 @@ go install github.com/josephnaberhaus/gauthordle@latest
 Download and extract the appropriate binary for your platform on the [releases page](https://github.com/JosephNaberhaus/gauthordle/releases).
 
 ## Configuration
-You can optionally specify a config file at `~/.gauthordle.yaml`
+You can optionally specify a config file at `~/.gauthordle.yaml`:
 
 ```yaml
-author_filters:
+author_filters: # (Optional)
   - exclude_name: "<regex of author names to exclude>"
   - exclude_name: "<another regex of author names to exclude>"
   - exclude_email: "<regex of author e-mails to exclude>"
   - exclude_email: "<another regex of author e-mails to exclude>"
-teams:
+teams: # (Optional)
   your-team-name:
     - "<email address 1>"
     - "<email address 2>"
