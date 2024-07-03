@@ -53,9 +53,8 @@ func (f *Filter) filterOutBots(commits []git.Commit) []git.Commit {
 			continue
 		}
 
-		// Often robots won't have a proper "<First> <Last>" name (with a space separator).
-		// This is going to have many false positives, but in the repos I tested it is more fun.
-		if !strings.Contains(commit.AuthorName, " ") {
+		// If the author's name contains the word "robot" that's a pretty good indication that it's a robot.
+		if strings.Contains(strings.ToLower(commit.AuthorName), "robot") {
 			continue
 		}
 

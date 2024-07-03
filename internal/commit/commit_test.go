@@ -19,7 +19,7 @@ func TestFilter_Filter_FilterOutBots(t *testing.T) {
 			AuthorEmail: "joe.smith@example.noreply.com",
 		},
 		{
-			AuthorName:  "NoSpace",
+			AuthorName:  "Robot",
 			AuthorEmail: "joe.smith@example.com",
 		},
 	}
