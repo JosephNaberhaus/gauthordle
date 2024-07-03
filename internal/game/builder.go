@@ -82,8 +82,8 @@ func pickPuzzleCommits(authorCommits []git.Commit, random *rand.Rand) [numPuzzle
 			continue
 		}
 
-		result[i] = authorCommits[i]
-		pickedIndices[i] = struct{}{}
+		result[i] = authorCommits[index]
+		pickedIndices[index] = struct{}{}
 	}
 
 	return result
