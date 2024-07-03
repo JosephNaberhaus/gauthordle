@@ -18,7 +18,7 @@ import (
 const helpBody = "A daily game where you try to guess the author of some Git commits.\n\nTo play, simply \"git checkout\" the main development branch of your repository\nand run this program with no arguments.\n\nNew games start at midnight Central Time."
 
 var (
-	dumpCommits = flag.String("dumpCommits", "", "File to dump all commits considered when generating the game.")
+	dumpCommits = flag.String("debugDumpCommits", "", "File to dump all commits considered when generating the game.")
 	help        = flag.Bool("help", false, "Print the help message.")
 	random      = flag.Bool("random", false, "If true, play a random game instead of the daily game.")
 )
