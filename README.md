@@ -21,18 +21,22 @@ go install github.com/josephnaberhaus/gauthordle@latest
 Download and extract the appropriate binary for your platform on the [releases page](https://github.com/JosephNaberhaus/gauthordle/releases).
 
 ## Configuration
-You can optionally specify a config file at `~/.gauthordle.yaml`:
+You can optionally specify a config file at `~/.gauthordle.yaml`
 
 ```yaml
 author_filters:
-  - exclude_name: "<regex or author names to exclude>"
+  - exclude_name: "<regex of author names to exclude>"
+  - exclude_name: "<another regex of author names to exclude>"
   - exclude_email: "<regex of author e-mails to exclude>"
+  - exclude_email: "<another regex of author e-mails to exclude>"
 teams:
   your-team-name:
     - "<email address 1>"
     - "<email address 2>"
 ```
 
-The `author_filters` are useful for filtering out bots. Internally, guathordle attempts to automatically detect and remove bot-made commits, but it won't catch everything. **Note:** you aren't guranteed to get the same daily game as users who aren't using the exact same `author_filters`.
+The `author_filters` are useful for filtering out bots. Internally, guathordle attempts to automatically detect and remove bot-made commits, but it won't catch everything.
 
-The `teams` option allows you to play a game with certain authors. Any team specified in your config can be select by the `--team` flag when running gauthordle.
+The `teams` option allows you to play a game with certain authors. Any team specified in your config can be select by the `--team` flag (e.g. `gauthordle --team your-team-name`).
+
+**Note:** By using these options you won't get the same daily game as anyone who isn't using the same config file.
