@@ -1,12 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/josephnaberhaus/gauthordle/internal/commit"
+	"github.com/josephnaberhaus/gauthordle/internal/config"
 	"github.com/josephnaberhaus/gauthordle/internal/game"
 	"github.com/josephnaberhaus/gauthordle/internal/git"
 	"github.com/josephnaberhaus/gauthordle/internal/output"
+	"math/rand"
 	"os"
 	"strings"
 )
@@ -14,8 +18,9 @@ import (
 const helpBody = "A daily game where you try to guess the author of some Git commits.\n\nTo play, simply \"git checkout\" the main development branch of your repository\nand run this program with no arguments.\n\nNew games start at midnight Central Time."
 
 var (
-	help   = flag.Bool("help", false, "Print the help message.")
-	random = flag.Bool("random", false, "If true, play a random game instead of the daily game.")
+	dumpCommits = flag.String("dumpCommits", "", "File to dump all commits considered when generating the game.")
+	help        = flag.Bool("help", false, "Print the help message.")
+	random      = flag.Bool("random", false, "If true, play a random game instead of the daily game.")
 )
 
 func main() {
@@ -39,21 +44,40 @@ func main() {
 
 	fmt.Println("Building today's game...")
 
-	var puzzle game.Puzzle
-	var err error
-	if *random {
-		puzzle, err = game.BuildRandom()
-	} else {
-		puzzle, err = game.BuildToday()
-	}
-	if err != nil {
-		exit(err)
+	startTime, endTime := game.PuzzleTimeRange()
+	cfg, err := config.Load()
+	exitIfError(err)
+
+	filter, err := commit.BuildFilter(
+		commit.WithConfig(cfg),
+		commit.WithStartTime(startTime),
+		commit.WithEndTime(endTime),
+	)
+	exitIfError(err)
+	commits, err := filter.GetCommits()
+	exitIfError(err)
+
+	if *dumpCommits != "" {
+		serializedCommits, err := json.Marshal(commits)
+		exitIfError(err)
+
+		err = os.WriteFile(*dumpCommits, serializedCommits, os.ModePerm)
+		exitIfError(err)
 	}
 
-	err = puzzle.Run()
-	if err != nil {
-		exit(err)
+	gameOptions := []game.Option{
+		game.WithCommits(commits),
 	}
+	if !*random {
+		// For non-random games, use the startTime as the random source so that it's stable throughout the day.
+		gameOptions = append(gameOptions, game.WithRandomSource(rand.NewSource(startTime.Unix())))
+	}
+
+	puzzle, err := game.BuildPuzzle(gameOptions...)
+	exitIfError(err)
+
+	err = puzzle.Run()
+	exitIfError(err)
 }
 
 func showUsage() {
@@ -61,6 +85,12 @@ func showUsage() {
 	flag.Usage()
 
 	os.Exit(0)
+}
+
+func exitIfError(err error) {
+	if err != nil {
+		exit(err)
+	}
 }
 
 func exit(err error) {
