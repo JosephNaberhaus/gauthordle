@@ -18,7 +18,7 @@ import (
 const helpBody = "A daily game where you try to guess the author of some Git commits.\n\nTo play, simply \"git checkout\" the main development branch of your repository\nand run this program with no arguments.\n\nNew games start at midnight Central Time."
 
 var (
-	dumpCommits = flag.String("debugDumpCommits", "", "File to dump all commits considered when generating the game.")
+	dumpCommits = flag.String("debugDumpCommits", "", "File to dump JSON containing all commits considered when generating the game.")
 	help        = flag.Bool("help", false, "Print the help message.")
 	random      = flag.Bool("random", false, "If true, play a random game instead of the daily game.")
 )
@@ -58,7 +58,7 @@ func main() {
 	exitIfError(err)
 
 	if *dumpCommits != "" {
-		serializedCommits, err := json.Marshal(commits)
+		serializedCommits, err := json.MarshalIndent(commits, "", "  ")
 		exitIfError(err)
 
 		err = os.WriteFile(*dumpCommits, serializedCommits, os.ModePerm)
