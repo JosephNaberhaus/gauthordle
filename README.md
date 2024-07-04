@@ -1,7 +1,7 @@
 # gauthordle
 Given a commit message, can you guess who wrote it?
 
-https://github.com/JosephNaberhaus/gauthordle/assets/26124819/d43e249f-e7eb-4f32-9558-54f3303aeb35
+![A demonstration of me playing gauthordle](demo.gif)
 
 New games come out at midnight Central Time. Each game is deterministically generated from your git history so everyone can play the same puzzle each day.
 
