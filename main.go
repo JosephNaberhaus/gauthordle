@@ -43,7 +43,7 @@ func main() {
 		exit(errors.New("must be in a git repository"))
 	}
 
-	fmt.Println("Building today's game...")
+	fmt.Println("Building game...")
 
 	startTime, endTime := game.PuzzleTimeRange()
 	cfg, err := config.Load()

@@ -50,7 +50,7 @@ func (p Puzzle) Run() error {
 
 		output.PrintColor("Guess the author of the following commit", output.White)
 		if stage > 0 {
-			output.PrintColor("s", output.Yellow)
+			output.PrintColor("s", output.White)
 		}
 		output.PrintColorLn(":", output.Yellow)
 		output.Ln()
