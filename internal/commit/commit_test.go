@@ -250,7 +250,7 @@ func TestFilter_Filter_FiltersCommitSubjects(t *testing.T) {
 			SubjectLine: "Merge branch 'master' of...",
 		},
 		{
-			SubjectLine: "Merged master",
+			SubjectLine: "merged master",
 		},
 		{
 			SubjectLine: "PREFIX Merge branch 'master' of...",
