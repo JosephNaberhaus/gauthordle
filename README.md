@@ -24,19 +24,23 @@ Download and extract the appropriate binary for your platform on the [releases p
 You can optionally specify a config file at `~/.gauthordle.yaml`:
 
 ```yaml
-author_filters: # (Optional)
+author_filters: # (Optional) Allows you to filter out from the game.
   - exclude_name: "<regex of author names to exclude>"
   - exclude_name: "<another regex of author names to exclude>"
   - exclude_email: "<regex of author e-mails to exclude>"
   - exclude_email: "<another regex of author e-mails to exclude>"
-teams: # (Optional)
+teams: # (Optional) Specifies what teams should be available with the --team flag.
   your-team-name:
     - "<email address 1>"
     - "<email address 2>"
+author_bias: 2.1 # (Optional) Specifies how much to bias towards high commit count authors.
+
 ```
 
 The `author_filters` are useful for filtering out bots. Internally, guathordle attempts to automatically detect and remove bot-made commits, but it won't catch everything.
 
 The `teams` option allows you to play a game with certain authors. Any team specified in your config can be select by the `--team` flag (e.g. `gauthordle --team your-team-name`).
 
-**Note:** By using these options you won't get the same daily game as anyone who isn't using the same config file.
+The `author_bias` changes how much the randomness is biased toward high committers. A bigger bias increases the likelihood that answer will be a high commit count author. The default value is 3.5 and the value must be in between 1 and 5. Setting it to 1 will remove the bias entirely.
+
+**Note:** When using these options you won't get the same daily game as anyone who isn't using the same config file.

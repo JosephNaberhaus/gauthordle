@@ -1,6 +1,7 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -11,6 +12,7 @@ import (
 type builder struct {
 	randomSource rand.Source
 	commits      []git.Commit
+	authorBias   float64
 }
 
 type Option func(*builder)
@@ -27,6 +29,12 @@ func WithCommits(commits []git.Commit) Option {
 	}
 }
 
+func WithAuthorBias(authorBias float64) Option {
+	return func(b *builder) {
+		b.authorBias = authorBias
+	}
+}
+
 func BuildPuzzle(opts ...Option) (Puzzle, error) {
 	b := new(builder)
 	for _, opt := range opts {
@@ -37,6 +45,9 @@ func BuildPuzzle(opts ...Option) (Puzzle, error) {
 	if b.randomSource == nil {
 		b.randomSource = rand.NewSource(time.Now().Unix())
 	}
+	if b.authorBias < 1 || b.authorBias > 5 {
+		return Puzzle{}, errors.New("author bias must be between 1 and 5")
+	}
 
 	return b.buildPuzzle()
 }
@@ -44,7 +55,7 @@ func BuildPuzzle(opts ...Option) (Puzzle, error) {
 func (b builder) buildPuzzle() (Puzzle, error) {
 	random := rand.New(b.randomSource)
 
-	author, err := pickAuthor(b.commits, random)
+	author, err := pickAuthor(b.commits, b.authorBias, random)
 	if err != nil {
 		return Puzzle{}, fmt.Errorf("error building puzzle: %w", err)
 	}

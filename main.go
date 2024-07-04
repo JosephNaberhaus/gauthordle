@@ -85,6 +85,11 @@ func main() {
 		// For non-random games, use the startTime as the random source so that it's stable throughout the day.
 		gameOptions = append(gameOptions, game.WithRandomSource(rand.NewSource(startTime.Unix())))
 	}
+	if cfg.AuthorBias != nil {
+		gameOptions = append(gameOptions, game.WithAuthorBias(*cfg.AuthorBias))
+	} else {
+		gameOptions = append(gameOptions, game.WithAuthorBias(3.5))
+	}
 
 	puzzle, err := game.BuildPuzzle(gameOptions...)
 	exitIfError(err)

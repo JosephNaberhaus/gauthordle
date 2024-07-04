@@ -51,7 +51,7 @@ func allAuthorEmails(commits []git.Commit) []string {
 	return result
 }
 
-func pickAuthor(commits []git.Commit, random *rand.Rand) (string, error) {
+func pickAuthor(commits []git.Commit, authorBias float64, random *rand.Rand) (string, error) {
 	numByAuthor := numCommitsByAuthorEmail(commits)
 	allAuthors := allAuthorEmails(commits)
 
@@ -79,10 +79,9 @@ func pickAuthor(commits []git.Commit, random *rand.Rand) (string, error) {
 
 	// Use a root curve so that we favor the higher contributing users.
 	// A higher bias increases the likelihood that a high-contributing user will be picked.
-	const biasPower = float64(3.5)
-	randMax := math.Pow(float64(len(allAuthors)), biasPower)
+	randMax := math.Pow(float64(len(allAuthors)), authorBias)
 	randNumber := random.Intn(int(math.Floor(randMax)))
-	index := int(math.Pow(float64(randNumber), 1/biasPower))
+	index := int(math.Pow(float64(randNumber), 1/authorBias))
 
 	// Make sure that floating point error didn't put us in an invalid index
 	index = max(index, 0)
