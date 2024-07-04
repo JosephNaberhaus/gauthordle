@@ -122,7 +122,7 @@ func (f *Filter) filterCommitSubjects(commits []git.Commit) []git.Commit {
 		}
 
 		// Merge commits aren't helpful
-		if strings.Contains(commit.SubjectLine, "Merge branch") {
+		if strings.Contains(strings.ToLower(commit.SubjectLine), "merge") {
 			continue
 		}
 
