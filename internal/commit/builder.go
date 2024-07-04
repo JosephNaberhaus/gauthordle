@@ -3,10 +3,11 @@ package commit
 import (
 	"cmp"
 	"fmt"
-	"github.com/josephnaberhaus/gauthordle/internal/config"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/josephnaberhaus/gauthordle/internal/config"
 )
 
 type FilterOption func(filter *Filter) error

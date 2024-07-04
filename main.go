@@ -5,14 +5,15 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"math/rand"
+	"os"
+	"strings"
+
 	"github.com/josephnaberhaus/gauthordle/internal/commit"
 	"github.com/josephnaberhaus/gauthordle/internal/config"
 	"github.com/josephnaberhaus/gauthordle/internal/game"
 	"github.com/josephnaberhaus/gauthordle/internal/git"
 	"github.com/josephnaberhaus/gauthordle/internal/output"
-	"math/rand"
-	"os"
-	"strings"
 )
 
 const helpBody = "A daily game where you try to guess the author of some Git commits.\n\nTo play, simply \"git checkout\" the main development branch of your repository\nand run this program with no arguments.\n\nNew games start at midnight Central Time."

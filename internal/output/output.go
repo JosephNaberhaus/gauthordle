@@ -2,8 +2,9 @@ package output
 
 import (
 	"fmt"
-	escapes "github.com/snugfox/ansi-escapes"
 	"os"
+
+	escapes "github.com/snugfox/ansi-escapes"
 )
 
 type Color int

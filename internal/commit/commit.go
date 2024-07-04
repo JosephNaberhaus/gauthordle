@@ -2,11 +2,12 @@ package commit
 
 import (
 	"fmt"
-	"github.com/josephnaberhaus/gauthordle/internal/git"
 	"regexp"
 	"slices"
 	"strings"
 	"time"
+
+	"github.com/josephnaberhaus/gauthordle/internal/git"
 )
 
 type Filter struct {

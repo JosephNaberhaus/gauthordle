@@ -1,11 +1,12 @@
 package commit
 
 import (
+	"testing"
+
 	"github.com/josephnaberhaus/gauthordle/internal/config"
 	"github.com/josephnaberhaus/gauthordle/internal/git"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestFilter_Filter_FilterOutBots(t *testing.T) {

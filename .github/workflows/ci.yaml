@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Run tests
+      - name: Check formatting
         uses: JosephNaberhaus/actions/go-check-formatting@v1.2.0
 
   test:

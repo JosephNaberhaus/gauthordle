@@ -1,11 +1,12 @@
 package game
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/JosephNaberhaus/prompt"
 	"github.com/josephnaberhaus/gauthordle/internal/git"
 	"github.com/josephnaberhaus/gauthordle/internal/output"
-	"strconv"
-	"time"
 )
 
 const header = "                   _   _                   _ _      \n  __ _  __ _ _   _| |_| |__   ___  _ __ __| | | ___ \n / _` |/ _` | | | | __| '_ \\ / _ \\| '__/ _` | |/ _ \\\n| (_| | (_| | |_| | |_| | | | (_) | | | (_| | |  __/\n \\__, |\\__,_|\\__,_|\\__|_| |_|\\___/|_|  \\__,_|_|\\___|\n |___/      The daily git author guessing game      "
