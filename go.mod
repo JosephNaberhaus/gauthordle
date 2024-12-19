@@ -5,7 +5,7 @@ go 1.22.3
 require (
 	github.com/JosephNaberhaus/prompt v1.1.2
 	github.com/snugfox/ansi-escapes v0.2.1-0.20201222033053-82a0109803f0
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
